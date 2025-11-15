@@ -1,0 +1,58 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./data.db"
+}
+
+model MapObject {
+  id        String   @id @default(cuid())
+  type      String
+  lat       Float
+  lng       Float
+  createdAt DateTime @default(now())
+
+  connectionFrom Connection[] @relation("connFrom")
+  connectionTo   Connection[] @relation("connTo")
+  
+  cablesFrom Cable[] @relation("cableFrom")
+  cablesTo   Cable[] @relation("cableTo")
+}
+
+model Connection {
+  id      String    @id @default(cuid())
+  from    MapObject @relation("connFrom", fields: [fromId], references: [id])
+  fromId  String
+  to      MapObject @relation("connTo",   fields: [toId],   references: [id])
+  toId    String
+  createdAt DateTime @default(now())
+}
+
+model Cable {
+  id          String   @id @default(cuid())
+  name        String
+  fiberCount  Int
+  from        MapObject @relation("cableFrom", fields: [fromId], references: [id])
+  fromId      String
+  to          MapObject @relation("cableTo", fields: [toId], references: [id])
+  toId        String
+  createdAt   DateTime @default(now())
+  
+  splices     Splice[]
+}
+
+model Splice {
+  id            String   @id @default(cuid())
+  cable         Cable    @relation(fields: [cableId], references: [id])
+  cableId       String
+  fiberNumber   Int
+  splicedTo     String?
+  splicedCableId String?
+  splicedFiber  Int?
+  notes         String?
+  createdAt     DateTime @default(now())
+  
+  @@unique([cableId, fiberNumber])
+}
