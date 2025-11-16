@@ -17,5 +17,38 @@ npx prisma migrate dev --name data
 node ./src/index.js
 ```
 
+# api
+## `/cables`
+| method  | URL | desc | auth |
+| ------ | ------------- | ----------------------------------------------------- | ----------- |
+| GET | `/cables` | получить все кабели или фильтровать по `connectionId` | ❌ |
+| GET | `/cables/:id` | получить кабель по ID, включая сварки  | ❌ |
+| POST | `/cables` | создать кабель  | ✅ |
+| DELETE | `/cables/:id` | удалить кабель и его сварки | ✅ |
+
+## `/connections`
+| method  | URL | desc | auth |
+| ------ | ------------------ | ----------------------- | ----------- |
+| GET | `/connections` | получить все соединения | ❌ |
+| POST | `/connections` | создать соединение      | ✅ |
+| DELETE | `/connections/:id` | удалить соединение      | ✅ |
+
+## `/objects`
+
+| method  | URL | desc | auth |
+| ------ | -------------- | ------------------------------- | ----------- |
+| GET | `/objects` | получить все объекты | ❌ |
+| POST | `/objects` | создать объект | ✅ |
+| DELETE | `/objects/:id` | удалить объект и его соединения | ✅ |
+
+## `/splices`
+
+| method  | URL | desc | auth |
+| ------ | -------------------------------- | --------------------------- | ----------- |
+| GET    | `/splices?cableId=abc123` | получить все сварки кабеля | ❌ |
+| POST   | `/splices` | создать или обновить сварку | ✅ |
+| DELETE | `/splices/:cableId/:fiberNumber` | удалить конкретное волокно | ✅ |
+| DELETE | `/splices/cable/:cableId` | удалить все сварки кабеля | ✅ |
+
 # frontend
 use [this](https://github.com/decmbrs/ductify) repo to obtain this

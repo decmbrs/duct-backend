@@ -1,8 +1,6 @@
 const AUTH_TOKEN = process.env.AUTH_TOKEN;
 
 export const authenticateToken = (req, res, next) => {
-  console.log("AUTH_TOKEN:", process.env.AUTH_TOKEN);
-  console.log("AUTH HEADER:", req.headers['authorization']);
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1];
 
