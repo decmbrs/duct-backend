@@ -20,6 +20,25 @@ router.post("/", authenticateToken, async (req, res) => {
   res.json(item);
 });
 
+router.patch("/:id", authenticateToken, async (req, res) => {
+  const { id } = req.params;
+  const { lat, lng } = req.body;
+
+  try {
+    const updated = await prisma.mapObject.update({
+      where: { id },
+      data: { 
+        lat: parseFloat(lat), 
+        lng: parseFloat(lng) 
+      }
+    });
+
+    res.json(updated);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 router.delete("/:id", authenticateToken, async (req, res) => {
   const { id } = req.params;
 

@@ -22,12 +22,13 @@ model MapObject {
 }
 
 model Connection {
-  id      String    @id @default(cuid())
-  from    MapObject @relation("connFrom", fields: [fromId], references: [id])
-  fromId  String
-  to      MapObject @relation("connTo",   fields: [toId],   references: [id])
-  toId    String
-  createdAt DateTime @default(now())
+  id        String    @id @default(cuid())
+  from      MapObject @relation("connFrom", fields: [fromId], references: [id])
+  fromId    String
+  to        MapObject @relation("connTo",   fields: [toId],   references: [id])
+  toId      String
+  waypoints String    @default("[]")
+  createdAt DateTime  @default(now())
 }
 
 model Cable {
