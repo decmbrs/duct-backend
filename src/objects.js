@@ -23,17 +23,33 @@ router.post("/", authenticateToken, async (req, res) => {
 router.delete("/:id", authenticateToken, async (req, res) => {
   const { id } = req.params;
 
-  await prisma.connection.deleteMany({
-    where: {
-      OR: [
-        { fromId: id },
-        { toId: id }
-      ]
-    }
-  });
+  await prisma.$transaction(async (tx) => {
+    const cables = await tx.cable.findMany({
+      where: {
+        OR: [{ fromId: id }, { toId: id }]
+      },
+      select: { id: true }
+    });
 
-  await prisma.mapObject.delete({
-    where: { id }
+    if (cables.length > 0) {
+      await tx.splice.deleteMany({
+        where: { cableId: { in: cables.map(c => c.id) } }
+      });
+
+      await tx.cable.deleteMany({
+        where: { id: { in: cables.map(c => c.id) } }
+      });
+    }
+
+    await tx.connection.deleteMany({
+      where: {
+        OR: [{ fromId: id }, { toId: id }]
+      }
+    });
+
+    await tx.mapObject.delete({
+      where: { id }
+    });
   });
 
   res.status(200).json({ success: true });
